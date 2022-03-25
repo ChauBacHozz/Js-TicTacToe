@@ -33,7 +33,6 @@ for (let cell of cells) {
                     draw_check();
                 }         
                 result_check(); 
-
             }
        }   
     }
@@ -70,6 +69,5 @@ function result_check() {
 function draw_check() {
     if (x_pos.length + o_pos.length == 9) {
         result_area.innerHTML = 'Draw!';
-
     }
 }
