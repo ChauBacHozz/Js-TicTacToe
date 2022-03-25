@@ -1,11 +1,10 @@
 const cells = document.querySelectorAll('.cell');
 const reset_btn = document.querySelector('.reset-btn');
 var result_area = document.querySelector('.result-area');
-var human_turn = true;
-var cells_map = ['','','','','','','','',''];
-var cells_row = [[], [], []];
-var cells_column = [[], [], []];
-var cells_cross = [[], []];
+var first_turn = true;
+var not_won = true;
+var x_pos = [];
+var o_pos = [];
 const win_condition = [
     [0,1,2],
     [3,4,5],
@@ -16,54 +15,61 @@ const win_condition = [
     [0,4,8],
     [2,4,6],
 ]
+
 for (let cell of cells) {
     cell.onclick = function () {
-        let index = Array.prototype.indexOf.call(cells,cell);
-        if (human_turn == true) {
-            cell.innerHTML = 'O';
-            human_turn = false;
-        } else {
-            cell.innerHTML = 'X';
-            human_turn = true;
-        }
-        cells_map[index] = cell.innerHTML;
-        result_check();
+        if (not_won == true) {
+            let index = Array.prototype.indexOf.call(cells,cell);
+            if (!x_pos.includes(index) && !(o_pos.includes(index))) {
+                if (first_turn == true) {
+                    cell.innerHTML = 'O';
+                    o_pos.push(index);
+                    first_turn = false;
+                    draw_check();
+                } else {
+                    cell.innerHTML = 'X';
+                    x_pos.push(index);
+                    first_turn = true;
+                    draw_check();
+                }         
+                result_check(); 
+
+            }
+       }   
     }
 }
+
 reset_btn.onclick = function () {
+    result_area.innerHTML = 'GAME START!';
     for (let cell of cells) {
         cell.innerHTML = '';
     }
-    human_turn = false;
+    first_turn = false;
+    not_won = true;
+    x_pos = [];
+    o_pos = [];
 }
+
 function result_check() {
-    for (let index = 0; index < 9; index++) {
-        if (index % 3 == 0) {
-            cells_row[index/3] = cells_map.slice(index, index + 3);
-        }
-        if (index == 0 || index == 1 || index == 2) {
-            cells_column[index] = [cells_map[index], cells_map[index + 3], cells_map[index + 6]];
-        }
-        if (index == 0 || index == 2) {
-            cells_cross[0] = [cells_map[0], cells_map[4], cells_map[8]];
-            cells_cross[2] = [cells_map[2], cells_map[4], cells_map[6]];
-
-        }
-    }
     for (let condition of win_condition) {
-        for (let index = 0; index < 3; index++) {
-            if (condition == cells_column[index] 
-            || condition == cells_row[index]
-            || condition == cells_cross[index - 1]) {
-                console.log(win);
-                if (condition[0] == 'X') {
-                    result_area.innerHTML = 'Player X win';
-                }
-                else {
-                    result_area.innerHTML = 'Player O win';
-                }
-            }
+        if (x_pos.includes(condition[0]) 
+        && x_pos.includes(condition[1]) 
+        && x_pos.includes(condition[2])) {
+            result_area.innerHTML = 'Player X win!';
+            not_won = false;
+        }
+        if (o_pos.includes(condition[0]) 
+        && o_pos.includes(condition[1]) 
+        && o_pos.includes(condition[2])) {
+            result_area.innerHTML = 'Player O win!';
+            not_won = false;
         }
     }
+}
 
+function draw_check() {
+    if (x_pos.length + o_pos.length == 9) {
+        result_area.innerHTML = 'Draw!';
+
+    }
 }
