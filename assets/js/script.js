@@ -34,7 +34,7 @@ for (let cell of cells) {
                 }         
                 result_check(); 
             }
-       }   
+        }   
     }
 }
 
